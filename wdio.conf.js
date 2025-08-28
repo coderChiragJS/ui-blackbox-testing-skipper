@@ -184,8 +184,14 @@ exports.config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    // before: function (capabilities, specs) {
-    // },
+    before: function (capabilities, specs) {
+        // Load test data into global scope
+        const fs = require('fs');
+        const path = require('path');
+        const testDataPath = path.join(__dirname, 'test', 'data', 'testData.json');
+        global.testData = JSON.parse(fs.readFileSync(testDataPath, 'utf8'));
+        console.log('✅ Test data loaded successfully');
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
