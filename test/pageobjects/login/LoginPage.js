@@ -28,7 +28,7 @@ class LoginPage extends BasePage {
     }
 
     get ageConfirmationCheckbox() {
-        return $('android.widget.CheckBox');
+        return $('android=new UiSelector().className("android.widget.CheckBox")');
     }
 
     get continueButton() {
@@ -81,7 +81,21 @@ class LoginPage extends BasePage {
     }
 
     async confirmAge() {
-        await this.safeClick(this.ageConfirmationCheckbox);
+        // Wait for checkbox to be available
+        await this.waitForDisplayed(this.ageConfirmationCheckbox, this.timeout.medium);
+        
+        // Check if already checked
+        const isChecked = await this.ageConfirmationCheckbox.getAttribute('checked');
+        if (String(isChecked) !== 'true') {
+            await this.safeClick(this.ageConfirmationCheckbox);
+            await driver.pause(1000); // Wait for state change
+            
+            // Verify it got checked
+            const newState = await this.ageConfirmationCheckbox.getAttribute('checked');
+            if (String(newState) !== 'true') {
+                throw new Error('Age confirmation checkbox was not checked successfully');
+            }
+        }
         await this.takeScreenshot('age_confirmed');
     }
 
@@ -99,10 +113,43 @@ class LoginPage extends BasePage {
         await this.enterPhoneNumber(phone);
         await this.enterPassword(password);
         await this.confirmAge();
+        
+        // Validate all fields are properly filled before continuing
+        await this.validateAllFieldsComplete(phone);
+        
         await this.clickContinue();
 
         // Verify success after login
         await this.verifyLoginSuccess();
+    }
+
+    // Validate all required fields are complete
+    async validateAllFieldsComplete(expectedPhone) {
+        // Verify phone number is entered
+        const phoneValue = await this.phoneNumberField.getAttribute('text');
+        if (!phoneValue || phoneValue.trim() === '') {
+            throw new Error('Phone number field is empty');
+        }
+
+        // Verify password field has content (can't read actual password)
+        const passwordExists = await this.passwordField.isDisplayed();
+        if (!passwordExists) {
+            throw new Error('Password field not found');
+        }
+
+        // Verify checkbox is checked
+        const isChecked = await this.ageConfirmationCheckbox.getAttribute('checked');
+        if (String(isChecked) !== 'true') {
+            throw new Error('Age confirmation checkbox is not checked');
+        }
+
+        // Verify continue button is enabled
+        const continueEnabled = await this.continueButton.isEnabled();
+        if (!continueEnabled) {
+            throw new Error('Continue button is not enabled - form may be incomplete');
+        }
+
+        await this.takeScreenshot('all_fields_validated');
     }
 
     // Verify login success (popup first, then proceed)
