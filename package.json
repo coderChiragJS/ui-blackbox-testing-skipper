@@ -1,0 +1,30 @@
+{
+  "name": "ui-test-blackbox",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"✅ Use: npm run test:smoke (quick) or npm run test:full (complete)\"",
+    "setup:dirs": "mkdir -p screenshots page-sources test-results allure-results logs",
+    "test:smoke": "npx wdio run wdio.mobile.conf.js --spec=\"test/specs/smoke/login.smoke.test.js\"",
+    "test:regression": "npx wdio run wdio.mobile.conf.js --spec=\"test/specs/regression/login.regression.test.js\"",
+    "test:full": "npx wdio run wdio.mobile.conf.js --spec=\"test/specs/**/*.test.js\"",
+    "test:report": "npx allure generate allure-results --clean -o allure-report && npx allure open allure-report",
+    "help": "echo \"📖 Available commands:\n  npm run test:smoke     - Quick login test\n  npm run test:regression - Error handling tests\n  npm run test:full      - All tests\n  npm run test:report    - Generate HTML report\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@wdio/appium-service": "^9.19.2",
+    "@wdio/cli": "^9.19.2"
+  },
+  "devDependencies": {
+    "@wdio/local-runner": "^9.19.2",
+    "@wdio/mocha-framework": "^9.19.2",
+    "@wdio/spec-reporter": "^9.19.2",
+    "@wdio/allure-reporter": "^9.19.2",
+    "@wdio/junit-reporter": "^9.19.2",
+    "allure-commandline": "^2.24.1"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "login": {
+    "validCredentials": {
+      "phone": "9993297888",
+      "password": "test@123",
+      "countryCode": "+91"
+    },
+    "invalidCredentials": {
+      "phone": "12345678",
+      "password": "wrongpass",
+      "countryCode": "+1"
+    }
+  },
+  "timeouts": {
+    "short": 5000,
+    "medium": 15000,
+    "long": 30000
+  },
+  "countries": {
+    "india": {
+      "code": "+91",
+      "name": "India",
+      "flag": "🇮🇳"
+    },
+    "usa": {
+      "code": "+1",
+      "name": "United States",
+      "flag": "🇺🇸"
+    }
+  }
+}
