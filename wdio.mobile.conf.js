@@ -18,7 +18,7 @@ exports.config = {
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'emulator-5554',
-        'appium:app': '/Users/chiragtankwal/projects/ui-test-blackbox/skipper11-2025-08-25-debug.apk',
+        'appium:app': '/Users/chiragtankwal/projects/ui-test-blackbox/skipper11-2025-09-08-debug.apk',
         'appium:automationName': 'UiAutomator2',
         'appium:noReset': true,
         'appium:dontStopAppOnReset': true,
@@ -46,7 +46,7 @@ exports.config = {
     // Reporters
     reporters: ['spec'],
     
-    // No services - Appium running manually
+    // Run Appium manually to avoid startup race/warnings from service
     services: [],
     
     // Hooks
@@ -69,10 +69,14 @@ exports.config = {
     },
     
     after: async function(result, capabilities, specs) {
-        // Keep app open by default for manual inspection
-        console.log('🔄 Keeping app open for manual inspection...');
-        console.log('📱 App will remain open - press Ctrl+C to close when done');
-        // Keep session alive for 5 minutes
-        await driver.pause(300000);
+        try {
+            if (global.browser && browser.sessionId && typeof browser.pause === 'function') {
+                console.log('🔄 Keeping app open for manual inspection...');
+                console.log('📱 App will remain open - press Ctrl+C to close when done');
+                await browser.pause(300000);
+            }
+        } catch (e) {
+            // No active session; nothing to keep open
+        }
     }
 };

@@ -29,9 +29,62 @@ class DashboardPage extends BasePage {
         return $$('android=new UiSelector().resourceId("*match*")');
     }
 
+    // Profile navigation button
+    get profileButton() {
+        return $('android=new UiSelector().textContains("Profile")');
+    }
+
+    // Settings navigation button  
+    get settingsButton() {
+        return $('android=new UiSelector().textContains("Settings")');
+    }
+
+    // Dashboard indicator elements
+    get dashboardTitle() {
+        return $('android=new UiSelector().textContains("Dashboard")');
+    }
+
     // ---------------------------
     // Actions
     // ---------------------------
+
+    async waitForPageLoad() {
+        try {
+            await this.waitForDisplayed(this.upcomingMatchesSection, this.timeout.medium);
+        } catch (error) {
+            await this.waitForDisplayed(this.upcomingMatchesText, this.timeout.medium);
+        }
+        await this.takeScreenshot('dashboard_loaded');
+    }
+
+    async verifyUserLoggedIn() {
+        // Verify we're on dashboard by checking for upcoming matches section
+        const isUpcomingVisible = await this.upcomingMatchesText.isDisplayed().catch(() => false);
+        const isUpcomingAccessible = await this.upcomingMatchesSection.isDisplayed().catch(() => false);
+        
+        if (!isUpcomingVisible && !isUpcomingAccessible) {
+            throw new Error('User not logged in - dashboard not displayed');
+        }
+        
+        console.log('✅ User successfully logged in and dashboard displayed');
+        await this.takeScreenshot('user_logged_in_verified');
+    }
+
+    async verifyDashboardDisplayed() {
+        await this.verifyUserLoggedIn();
+    }
+
+    async openProfile() {
+        await this.safeClick(this.profileButton);
+        await this.takeScreenshot('profile_opened');
+        console.log('✅ Profile opened');
+    }
+
+    async openSettings() {
+        await this.safeClick(this.settingsButton);
+        await this.takeScreenshot('settings_opened');
+        console.log('✅ Settings opened');
+    }
 
     async waitOnDashboardAndClickMatchCard() {
         console.log('📱 Navigated to Dashboard - waiting 10 seconds...');

@@ -18,7 +18,7 @@ exports.config = {
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'emulator-5554',
-        'appium:app': '/Users/chiragtankwal/projects/ui-test-blackbox/skipper11-2025-08-25-debug.apk',
+        'appium:app': '/Users/chiragtankwal/projects/ui-test-blackbox/skipper11-2025-09-08-debug.apk',
         'appium:automationName': 'UiAutomator2',
         // Keep app state between runs so it doesn't close/logout
         'appium:noReset': true,
@@ -46,7 +46,9 @@ exports.config = {
     
     // Hooks
     before: function() {
-        // Add any setup code here
+        // Load test data globally
+        global.testData = require('./test/data/testData.json');
+        console.log('✅ Test data loaded successfully');
     },
     
     after: async function() {

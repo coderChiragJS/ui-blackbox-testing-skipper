@@ -16,7 +16,20 @@ class LoginPage extends BasePage {
     }
 
     get countryCodeButton() {
-        return this.getByXPath('//android.view.View[contains(@content-desc, "+")]');
+        // Try multiple selectors for the country code button to trigger centered picker
+        return $('//android.widget.Button[contains(@content-desc, "+")]') ||
+               $('//android.view.View[contains(@content-desc, "🇺🇸")]') ||
+               $('//android.view.View[contains(@content-desc, "+1")]') ||
+               this.getByXPath('//android.view.View[contains(@content-desc, "+")]');
+    }
+
+    // Alternative country button selectors
+    get countryButtonByFlag() {
+        return $('//android.view.View[contains(@content-desc, "🇺🇸")]');
+    }
+
+    get countryButtonByCode() {
+        return $('//android.view.View[contains(@content-desc, "+1")]');
     }
 
     get phoneNumberField() {
@@ -53,7 +66,40 @@ class LoginPage extends BasePage {
     }
 
     async selectCountryCode(countryCode = '+91') {
-        await this.safeClick(this.countryCodeButton);
+        // Try multiple approaches to open the centered country picker
+        let pickerOpened = false;
+        
+        // Strategy 1: Try main country button
+        try {
+            await this.safeClick(this.countryCodeButton);
+            await driver.pause(1000);
+            pickerOpened = true;
+        } catch (e) {
+            console.log('Main country button failed');
+        }
+        
+        // Strategy 2: Try flag-based button
+        if (!pickerOpened) {
+            try {
+                await this.safeClick(this.countryButtonByFlag);
+                await driver.pause(1000);
+                pickerOpened = true;
+            } catch (e) {
+                console.log('Flag button failed');
+            }
+        }
+        
+        // Strategy 3: Try code-based button
+        if (!pickerOpened) {
+            try {
+                await this.safeClick(this.countryButtonByCode);
+                await driver.pause(1000);
+                pickerOpened = true;
+            } catch (e) {
+                console.log('Code button failed');
+            }
+        }
+        
         await this.takeScreenshot('country_picker_opened');
         await this.countryPicker.selectCountry(countryCode);
     }

@@ -38,8 +38,36 @@ class CountryPickerPage extends BasePage {
     async selectCountry(countryCode) {
         let selected = false;
         
-        // Strategy 1: Try search if available
-        if (await this.searchField.isExisting()) {
+        // Wait for the centered picker to appear
+        await driver.pause(2000);
+        
+        // Strategy 1: Look for centered country options with flag emojis
+        if (countryCode === '+91') {
+            const indiaSelectors = [
+                () => $('android=new UiSelector().textContains("🇮🇳").textContains("+91")'),
+                () => $('android=new UiSelector().descriptionContains("🇮🇳").descriptionContains("+91")'),
+                () => $('android=new UiSelector().textContains("🇮🇳 +91")'),
+                () => $('android=new UiSelector().textContains("India")'),
+                () => $('android=new UiSelector().textContains("+91")')
+            ];
+            
+            for (const getSelector of indiaSelectors) {
+                try {
+                    const element = getSelector();
+                    if (await element.isExisting()) {
+                        await this.safeClick(element);
+                        selected = true;
+                        console.log('✅ Selected India (+91)');
+                        break;
+                    }
+                } catch (e) {
+                    // Continue to next selector
+                }
+            }
+        }
+        
+        // Strategy 2: Try search if available and not selected yet
+        if (!selected && await this.searchField.isExisting()) {
             try {
                 const countryName = this.getCountryNameByCode(countryCode);
                 await this.searchCountry(countryName);
@@ -52,7 +80,7 @@ class CountryPickerPage extends BasePage {
             }
         }
 
-        // Strategy 2: Direct selection by code
+        // Strategy 3: Direct selection by code
         if (!selected) {
             try {
                 const countryByCode = this.getCountryByCode(countryCode);
@@ -65,7 +93,7 @@ class CountryPickerPage extends BasePage {
             }
         }
 
-        // Strategy 3: Scroll and find
+        // Strategy 4: Scroll and find
         if (!selected) {
             await this.scrollAndSelectCountry(countryCode);
         }

@@ -13,7 +13,7 @@ exports.config = {
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'emulator-5554',
-        'appium:app': '/Users/chiragtankwal/projects/ui-test-blackbox/skipper11-2025-08-25-debug.apk',
+        'appium:app': '/Users/chiragtankwal/projects/ui-test-blackbox/skipper11-2025-09-08-debug.apk',
         'appium:automationName': 'UiAutomator2',
         'appium:noReset': true,
         'appium:dontStopAppOnReset': true,
