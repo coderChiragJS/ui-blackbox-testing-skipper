@@ -92,11 +92,12 @@ class BasePage {
     }
 
     /**
-     * Take screenshot with custom name
+     * Take screenshot with custom name - disabled to prevent session timeouts
      */
     async takeScreenshot(name) {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        await driver.saveScreenshot(`./screenshots/${name}_${timestamp}.png`);
+        // Temporarily disabled to prevent WebDriver session timeouts
+        console.log(`📸 Screenshot skipped: ${name}`);
+        return;
     }
 
     /**

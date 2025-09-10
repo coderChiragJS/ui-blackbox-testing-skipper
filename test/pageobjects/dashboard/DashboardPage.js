@@ -44,6 +44,23 @@ class DashboardPage extends BasePage {
         return $('android=new UiSelector().textContains("Dashboard")');
     }
 
+    // CREATE TEAM button selectors - multiple strategies for robustness
+    get createTeamButton() {
+        return $('android=new UiSelector().text("CREATE TEAM")');
+    }
+
+    get createTeamButtonByDesc() {
+        return $('android=new UiSelector().description("CREATE TEAM")');
+    }
+
+    get createTeamButtonByContains() {
+        return $('android=new UiSelector().textContains("CREATE")');
+    }
+
+    get createTeamButtonByClass() {
+        return $('android=new UiSelector().className("android.widget.Button").textContains("CREATE")');
+    }
+
     // ---------------------------
     // Actions
     // ---------------------------
@@ -172,6 +189,107 @@ class DashboardPage extends BasePage {
         await this.takeScreenshot('match_card_clicked');
         
         console.log('✅ Successfully clicked on a match card');
+    }
+
+    async waitForMatchDetailsAndClickCreateTeam() {
+        console.log('⏳ Waiting for Match Details screen to load...');
+        
+        // Wait for match details screen to load
+        await driver.pause(3000);
+        await this.takeScreenshot('match_details_loaded');
+        
+        console.log('🔍 Looking for CREATE TEAM button...');
+        
+        // Try multiple strategies to find the CREATE TEAM button
+        let createTeamBtn;
+        let found = false;
+        
+        // Strategy 1: Exact text match
+        try {
+            createTeamBtn = this.createTeamButton;
+            await this.waitForDisplayed(createTeamBtn, this.timeout.short);
+            found = true;
+            console.log('✅ Found CREATE TEAM button using exact text match');
+        } catch (error) {
+            console.log('Exact text match failed, trying description...');
+        }
+        
+        // Strategy 2: Description match
+        if (!found) {
+            try {
+                createTeamBtn = this.createTeamButtonByDesc;
+                await this.waitForDisplayed(createTeamBtn, this.timeout.short);
+                found = true;
+                console.log('✅ Found CREATE TEAM button using description');
+            } catch (error) {
+                console.log('Description match failed, trying text contains...');
+            }
+        }
+        
+        // Strategy 3: Text contains "CREATE"
+        if (!found) {
+            try {
+                createTeamBtn = this.createTeamButtonByContains;
+                await this.waitForDisplayed(createTeamBtn, this.timeout.short);
+                found = true;
+                console.log('✅ Found CREATE TEAM button using text contains');
+            } catch (error) {
+                console.log('Text contains failed, trying class + text...');
+            }
+        }
+        
+        // Strategy 4: Button class with CREATE text
+        if (!found) {
+            try {
+                createTeamBtn = this.createTeamButtonByClass;
+                await this.waitForDisplayed(createTeamBtn, this.timeout.short);
+                found = true;
+                console.log('✅ Found CREATE TEAM button using class + text');
+            } catch (error) {
+                console.log('Class + text failed, trying broad search...');
+            }
+        }
+        
+        // Strategy 5: Broad search for any button with "+" or "CREATE"
+        if (!found) {
+            try {
+                // Look for buttons with "+" symbol or "CREATE" text
+                const buttons = await $$('android=new UiSelector().clickable(true)');
+                for (const button of buttons) {
+                    try {
+                        const text = await button.getText();
+                        const desc = await button.getAttribute('content-desc');
+                        if (text.includes('CREATE') || text.includes('+') || 
+                            desc.includes('CREATE') || desc.includes('+')) {
+                            createTeamBtn = button;
+                            found = true;
+                            console.log('✅ Found CREATE TEAM button using broad search');
+                            break;
+                        }
+                    } catch (e) {
+                        // Skip this button if we can't get its text/description
+                        continue;
+                    }
+                }
+            } catch (error) {
+                console.log('Broad search also failed');
+            }
+        }
+        
+        if (!found) {
+            throw new Error('CREATE TEAM button not found after trying all strategies');
+        }
+        
+        // Click the CREATE TEAM button
+        console.log('🎯 Clicking CREATE TEAM button...');
+        await this.safeClick(createTeamBtn);
+        await this.takeScreenshot('create_team_clicked');
+        
+        console.log('✅ Successfully clicked CREATE TEAM button');
+        
+        // Wait for team creation screen to load
+        await driver.pause(2000);
+        await this.takeScreenshot('team_creation_screen');
     }
 }
 

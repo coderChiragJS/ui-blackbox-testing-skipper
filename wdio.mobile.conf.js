@@ -23,7 +23,7 @@ exports.config = {
         'appium:noReset': true,
         'appium:dontStopAppOnReset': true,
         'appium:autoGrantPermissions': true,
-        'appium:newCommandTimeout': 300,
+        'appium:newCommandTimeout': 600,
         // Disable problematic web-based features
         'appium:disableWindowAnimation': false,
         'appium:skipDeviceInitialization': false

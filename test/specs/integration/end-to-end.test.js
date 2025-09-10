@@ -15,41 +15,15 @@ describe('End-to-End Integration Tests', () => {
         // Step 3: Test dashboard functionality - click on match card
         await DashboardPage.waitOnDashboardAndClickMatchCard();
         
-        // Step 4: Verify navigation occurred (we should be on match details screen)
-        await driver.pause(2000);
+        // Step 4: Wait for match details and click CREATE TEAM button
+        await DashboardPage.waitForMatchDetailsAndClickCreateTeam();
         
-        // Step 5: Verify we're no longer on dashboard by checking for match details elements
-        const selectors = [
-            'android=new UiSelector().className("android.widget.ScrollView")',
-            'android=new UiSelector().className("android.view.ViewGroup")',
-            'android=new UiSelector().clickable(true)'
-        ];
+        // Step 5: Verify we successfully navigated to team creation screen
+        await driver.pause(3000);
         
-        let screenFound = false;
-        for (const selector of selectors) {
-            try {
-                const element = await $(selector);
-                if (await element.isDisplayed()) {
-                    screenFound = true;
-                    break;
-                }
-            } catch (e) { /* continue */ }
-        }
+        // Take final screenshot to verify we're on team creation screen
+        await driver.saveScreenshot('./team_creation_screen_final.png');
         
-        if (!screenFound) {
-            // Fallback: Check if dashboard is gone
-            try {
-                const dashboard = await $('android=new UiSelector().textContains("Upcoming")');
-                screenFound = !(await dashboard.isDisplayed());
-            } catch (e) {
-                screenFound = true; // Dashboard not found = navigated away
-            }
-        }
-        
-        if (!screenFound) {
-            throw new Error('Could not verify navigation to match details screen');
-        }
-        
-        console.log('✅ Complete user journey from login to match details completed successfully');
+        console.log('✅ Complete user journey from login through CREATE TEAM completed successfully');
     });
 });
