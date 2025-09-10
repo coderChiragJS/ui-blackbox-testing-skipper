@@ -1,8 +1,6 @@
 const { expect } = require('@wdio/globals');
 const LoginPage = require('../../pageobjects/login/LoginPage');
 const DashboardPage = require('../../pageobjects/dashboard/DashboardPage');
-const ProfilePage = require('../../pageobjects/profile/ProfilePage');
-const NavigationPage = require('../../pageobjects/common/NavigationPage');
 
 describe('End-to-End Integration Tests', () => {
     it('should complete full user journey from login through match selection', async () => {

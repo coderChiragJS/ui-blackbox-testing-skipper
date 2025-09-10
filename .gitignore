@@ -16,6 +16,9 @@ test-results/
 # Screenshots and page sources
 screenshots/
 page-sources/
+*.png
+*.xml
+*.mp4
 
 # Build artifacts
 *.apk

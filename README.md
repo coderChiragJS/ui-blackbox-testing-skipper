@@ -48,16 +48,39 @@ npm run test:full     # Complete test suite
 ├── 📊 screenshots/                    # Test screenshots
 ├── 📋 test-results/                   # Test reports
 └── 🗂️  allure-results/               # Detailed reports
+
+## 🎮 Running Tests
+
+### Prerequisites
+1. **APK File**: Place your Android APK file in the project directory
+2. **Appium Server**: Make sure Appium server is running on `127.0.0.1:4723`
+3. **Android Emulator**: Ensure emulator `emulator-5554` is running
+
+### Quick Start
+```bash
+# Set APK path and run smoke tests
+export APK_PATH="/path/to/your/app.apk"
+npm run test:smoke
+
+# Or specify APK inline
+APK_PATH="/path/to/your/app.apk" npm run test:smoke
+
+# Run specific test suites
+npm run test:login      # Login functionality only
+npm run test:dashboard  # Dashboard functionality only
+npm run test:regression # Error handling tests
+npm run test:full       # All tests
+
+# Generate HTML report after tests
+npm run test:report
 ```
 
-## 🎮 Available Commands
-
-| Command | What It Does | Time |
-|---------|-------------|------|
-| `npm run test:smoke` | Quick login test | 2-5 min |
-| `npm run test:regression` | Detailed login tests | 5-10 min |
-| `npm run test:full` | All tests | 10-15 min |
-| `npm run test:report` | Generate HTML report | 1 min |
+### Example with APK
+```bash
+# If your APK is in the project root
+export APK_PATH="./your-app.apk"
+npm run test:smoke
+```
 
 ## 🔧 Before Running Tests
 
