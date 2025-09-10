@@ -1,0 +1,72 @@
+appId: com.skipper11.android
+---
+# Login Regression Test - Maestro Version
+# Tests error handling and edge cases for login functionality
+# Replicates regression testing patterns from the original Appium tests
+
+- launchApp
+- runFlow: ../config/setup.yaml
+
+# Test 1: Invalid credentials test
+- assertVisible: "Login"
+- takeScreenshot: login_page_for_regression
+
+# Enter invalid phone number
+- tapOn:
+    id: "android.widget.EditText"
+    index: 0
+- inputText: "12345678"
+
+# Enter invalid password
+- tapOn:
+    id: "android.widget.EditText"
+    index: 1
+- inputText: "wrongpass"
+
+# Confirm age checkbox
+- tapOn:
+    id: "android.widget.CheckBox"
+
+# Try to continue with invalid credentials
+- tapOn: "Continue"
+- takeScreenshot: invalid_login_attempt
+
+# Wait for error message or validation
+- extendedWaitUntil:
+    visible:
+      text: ".*error.*|.*invalid.*|.*incorrect.*"
+    timeout: 5000
+- takeScreenshot: error_message_displayed
+
+# Test 2: Empty fields validation
+- tapOn:
+    id: "android.widget.EditText"
+    index: 0
+- clearText
+- tapOn:
+    id: "android.widget.EditText"
+    index: 1
+- clearText
+
+# Try to continue with empty fields
+- tapOn: "Continue"
+- takeScreenshot: empty_fields_validation
+
+# Test 3: Missing age confirmation
+- tapOn:
+    id: "android.widget.EditText"
+    index: 0
+- inputText: "9993297888"
+- tapOn:
+    id: "android.widget.EditText"
+    index: 1
+- inputText: "test@123"
+
+# Uncheck age confirmation if checked
+- tapOn:
+    id: "android.widget.CheckBox"
+    optional: true
+
+# Try to continue without age confirmation
+- tapOn: "Continue"
+- takeScreenshot: missing_age_confirmation

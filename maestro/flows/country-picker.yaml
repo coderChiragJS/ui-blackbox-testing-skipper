@@ -1,0 +1,52 @@
+appId: com.skipper11.android
+---
+# Country Picker Test - Maestro Version
+# Tests country selection functionality with multiple strategies
+# Replicates CountryPickerPage.js functionality
+
+- launchApp
+- runFlow: ../config/setup.yaml
+
+# Navigate to login page
+- assertVisible: "Login"
+
+# Open country picker
+- tapOn:
+    id: ".*[+].*"
+- takeScreenshot: country_picker_opened
+
+# Test 1: Select India (+91) - Primary test case
+- extendedWaitUntil:
+    visible: 
+      text: "🇮🇳"
+    timeout: 5000
+- tapOn: "🇮🇳 +91"
+- takeScreenshot: india_selected
+
+# Verify selection worked by checking if picker closed
+- extendedWaitUntil:
+    notVisible:
+      text: "🇮🇳"
+    timeout: 3000
+
+# Test 2: Reopen picker and test search functionality (if available)
+- tapOn:
+    id: ".*[+91].*"
+- tapOn:
+    id: "android.widget.EditText"
+    optional: true
+- inputText: "United States"
+- tapOn: "🇺🇸 +1"
+- takeScreenshot: usa_selected
+
+# Test 3: Test scrolling to find countries (fallback strategy)
+- tapOn:
+    id: ".*[+].*"
+    optional: true
+- scroll:
+    direction: DOWN
+    speed: 50
+- tapOn:
+    id: ".*[+44].*"
+    optional: true
+- takeScreenshot: uk_selected_via_scroll

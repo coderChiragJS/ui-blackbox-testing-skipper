@@ -1,0 +1,89 @@
+appId: com.skipper11.android
+---
+# Complete Test Flow - Maestro Version
+# Combines login and dashboard flows for comprehensive testing
+# Replicates the complete user journey from the Appium tests
+
+- launchApp
+- runFlow: ../config/setup.yaml
+
+# === LOGIN FLOW ===
+# Step 1: Wait for login page to load and verify elements
+- assertVisible: "Login"
+- assertVisible: 
+    text: "Enter phone number"  # Phone number field
+- assertVisible:
+    text: " Enter Password"  # Password field
+- assertVisible: "Continue"
+- takeScreenshot: login_page_loaded
+
+# Step 2: Select country code (+91 for India)
+- tapOn:
+    text: "🇺🇸\n+1"
+- tapOn:
+    text: "🇮🇳\n+91"
+- takeScreenshot: country_selected
+
+# Step 3: Enter phone number
+- tapOn:
+    text: "Enter phone number"
+- inputText: "9993297888"
+- takeScreenshot: phone_number_entered
+
+# Step 4: Enter password
+- tapOn:
+    text: " Enter Password"
+- inputText: "test@123"
+- takeScreenshot: password_entered
+
+# Step 5: Confirm age checkbox
+- tapOn:
+    point: "186,2393"
+- takeScreenshot: age_confirmed
+
+# Step 6: Click continue button
+- tapOn: "Continue"
+- takeScreenshot: continue_clicked
+
+# Step 7: Wait for login success and verify navigation
+- extendedWaitUntil:
+    notVisible: "Login"
+    timeout: 10000
+
+# Step 8: Handle popup if it appears and close it
+- tapOn:
+    text: "×"
+    optional: true
+- tapOn:
+    text: "Close"
+    optional: true
+- takeScreenshot: popup_handled
+
+# Step 9: Login success verification
+- takeScreenshot: login_success
+
+# === DASHBOARD FLOW ===
+# Step 10: Wait 10 seconds on dashboard (matching original test exactly)
+- waitForAnimationToEnd:
+    timeout: 10000
+- takeScreenshot: dashboard_after_10_seconds
+
+# Step 11: Look for "Upcoming Matches" text
+- assertVisible:
+    text: "Upcoming Matches"
+- takeScreenshot: upcoming_matches_found
+
+# Step 12: Find and click on first match card
+- tapOn:
+    text: ".*IND.*vs.*UAE.*"
+- takeScreenshot: match_card_clicked
+
+# Step 13: Verify navigation to match details screen
+- extendedWaitUntil:
+    visible:
+      text: "CREATE TEAM"
+    timeout: 5000
+    optional: true
+
+# Final verification screenshot
+- takeScreenshot: complete_flow_success

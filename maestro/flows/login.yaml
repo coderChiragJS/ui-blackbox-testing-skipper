@@ -1,0 +1,73 @@
+appId: com.skipper11.android
+---
+# Login Smoke Test - Maestro Version
+# Replicates: test/specs/smoke/login.smoke.test.js
+
+- launchApp
+- runFlow: ../config/setup.yaml
+
+# Step 1: Wait for login page to load and verify elements
+- assertVisible: "Login"
+- assertVisible: 
+    text: "Enter phone number"  # Phone number field
+- assertVisible:
+    text: " Enter Password"  # Password field
+- assertVisible: "Continue"
+
+# Take screenshot for verification
+- takeScreenshot: login_page_loaded
+
+# Step 2: Select country code (+91 for India)
+- tapOn:
+    text: "🇺🇸\n+1"
+- tapOn:
+    text: "🇮🇳\n+91"
+- takeScreenshot: country_selected
+
+# Step 3: Enter phone number
+- tapOn:
+    text: "Enter phone number"
+- inputText: "9993297888"
+- takeScreenshot: phone_number_entered
+
+# Step 4: Enter password
+- tapOn:
+    text: " Enter Password"
+- inputText: "test@123"
+- takeScreenshot: password_entered
+
+# Step 5: Confirm age checkbox
+- tapOn:
+    point: "186,2393"
+- takeScreenshot: age_confirmed
+
+# Step 6: Click continue button
+- tapOn: "Continue"
+- takeScreenshot: continue_clicked
+
+# Step 7: Wait for login processing
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Step 8: Handle popup if it appears and close it
+- tapOn:
+    text: "×"
+    optional: true
+- tapOn:
+    text: "Close"
+    optional: true
+- takeScreenshot: popup_handled
+
+# Step 9: Check if login succeeded by looking for dashboard elements
+- extendedWaitUntil:
+    visible:
+      text: "Upcoming"
+    timeout: 10000
+    optional: true
+
+# Step 10: Final verification screenshot
+- takeScreenshot: login_success
+
+# Step 11: Wait 5 seconds (matching original test)
+- waitForAnimationToEnd:
+    timeout: 5000

@@ -1,0 +1,19 @@
+appId: com.skipper11.android
+---
+# Setup configuration for Maestro tests
+# Common setup steps that can be reused across test flows
+
+# Wait for app to fully launch
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Grant any required permissions automatically
+- tapOn:
+    text: "Allow"
+    optional: true
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Take initial screenshot
+- takeScreenshot: app_launched

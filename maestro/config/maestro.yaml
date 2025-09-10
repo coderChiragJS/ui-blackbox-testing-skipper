@@ -1,0 +1,39 @@
+# Maestro Configuration File
+# Global settings for Skipper11 app testing
+
+# App configuration
+appId: com.skipper11.android
+
+# Default timeouts (in milliseconds)
+timeouts:
+  short: 5000
+  medium: 15000
+  long: 30000
+
+# Test data
+testData:
+  login:
+    validCredentials:
+      phone: "9993297888"
+      password: "test@123"
+      countryCode: "+91"
+    invalidCredentials:
+      phone: "12345678"
+      password: "wrongpass"
+      countryCode: "+1"
+
+# Device settings
+device:
+  platform: android
+  deviceName: "emulator-5554"
+  
+# Screenshot settings
+screenshots:
+  enabled: true
+  path: "./maestro-screenshots/"
+  
+# Reporting
+reporting:
+  enabled: true
+  format: "html"
+  path: "./maestro-reports/"

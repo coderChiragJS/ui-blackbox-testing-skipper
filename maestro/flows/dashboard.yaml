@@ -1,0 +1,44 @@
+appId: com.skipper11.android
+---
+# Dashboard Smoke Test - Maestro Version
+# Replicates: test/specs/smoke/dashboard.smoke.test.js
+
+- launchApp
+- runFlow: ../config/setup.yaml
+
+# Step 1: Perform login to get to dashboard (reusing login flow)
+- runFlow: login.yaml
+
+# Step 2: Wait 10 seconds on dashboard (matching original test exactly)
+- waitForAnimationToEnd:
+    timeout: 10000
+- takeScreenshot: dashboard_after_10_seconds
+
+# Step 3: Look for "Upcoming Matches" text with multiple strategies
+- assertVisible:
+    text: "Upcoming Matches"
+- takeScreenshot: upcoming_matches_found
+
+# Step 4: Find and click on first match card
+# Try multiple strategies to find clickable match cards
+- tapOn:
+    id: "android.view.ViewGroup"
+    index: 0
+- takeScreenshot: match_card_clicked
+
+# Step 5: Verify navigation to match details screen
+# Check for various indicators that we've navigated away from dashboard
+- extendedWaitUntil:
+    visible:
+      id: "android.widget.ScrollView"
+    timeout: 5000
+
+# Alternative verification - check if dashboard elements are gone
+- extendedWaitUntil:
+    notVisible:
+      text: "Upcoming"
+    timeout: 3000
+    optional: true
+
+# Final verification screenshot
+- takeScreenshot: match_details_screen_opened
